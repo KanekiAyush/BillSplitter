@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bill Splitter - Settle Up Fast with Exact Shares</title>
+  <meta name="description" content="Quickly and accurately split dining and group bills with exact cent distribution and saved results.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <div class="logo-wrapper">
+        <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path>
+          <path d="M12 6v2m0 8v2"></path>
+        </svg>
+        <span class="logo-text">BillSplitter</span>
+      </div>
+      <p class="app-tagline">Split group bills fast with 100% exact penny and paisa accuracy.</p>
+      <div class="header-badges">
+        <a href="bill-splitter.zip" download="bill-splitter.zip" class="header-download-btn" title="Download vanilla source code (index.html, style.css, script.js)">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          Download ZIP
+        </a>
+      </div>
+    </header>
+
+    <main class="main-card">
+      <form id="splitterForm" novalidate>
+        <div class="form-grid">
+          <!-- Currency Selection Dropdown -->
+          <div class="form-group">
+            <label for="currencySelect">Currency <span class="required-star">*</span></label>
+            <div class="input-wrapper">
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="2" y1="12" x2="22" y2="12"></line>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+              </svg>
+              <select id="currencySelect" name="currency" aria-label="Select currency">
+                <option value="USD">USD ($) - US Dollar</option>
+                <option value="INR">INR (₹) - Indian Rupee</option>
+                <option value="EUR">EUR (€) - Euro</option>
+                <option value="GBP">GBP (£) - British Pound</option>
+              </select>
+              <svg class="select-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Occasion Input -->
+          <div class="form-group">
+            <label for="occasionInput">Occasion Name <span class="label-optional">(Optional)</span></label>
+            <div class="input-wrapper">
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              <input 
+                type="text" 
+                id="occasionInput" 
+                name="occasion"
+                placeholder="e.g., Friday Dinner, Team Lunch" 
+                maxlength="60"
+                autocomplete="off"
+              >
+            </div>
+          </div>
+
+          <!-- Bill Amount Input -->
+          <div class="form-group">
+            <label for="billInput">Total Bill Amount <span class="required-star">*</span></label>
+            <div class="input-wrapper">
+              <span id="currencySymbol" class="currency-symbol">$</span>
+              <input 
+                type="number" 
+                id="billInput" 
+                name="bill"
+                placeholder="0.00" 
+                step="0.01" 
+                min="0.01"
+                required
+              >
+            </div>
+          </div>
+
+          <!-- Number of People Input -->
+          <div class="form-group">
+            <label for="peopleInput">Number of People <span class="required-star">*</span></label>
+            <div class="input-wrapper">
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              <input 
+                type="number" 
+                id="peopleInput" 
+                name="people"
+                placeholder="e.g., 4" 
+                step="1" 
+                min="1"
+                required
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="form-actions">
+          <button type="submit" id="calculateBtn" class="btn btn-primary">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="4" y="2" width="16" height="20" rx="2"></rect>
+              <line x1="8" y1="6" x2="16" y2="6"></line>
+              <line x1="16" y1="14" x2="16" y2="18"></line>
+              <path d="M16 10h.01"></path>
+              <path d="M12 10h.01"></path>
+              <path d="M8 10h.01"></path>
+              <path d="M12 14h.01"></path>
+              <path d="M8 14h.01"></path>
+              <path d="M12 18h.01"></path>
+              <path d="M8 18h.01"></path>
+            </svg>
+            Split the Bill
+          </button>
+          <button type="button" id="resetBtn" class="btn btn-secondary">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+              <path d="M3 3v5h5"></path>
+            </svg>
+            Clear / Reset
+          </button>
+        </div>
+      </form>
+
+      <!-- Error / Validation Message Display -->
+      <div id="messageBox" class="message-box" role="alert" style="display: none;">
+        <svg class="msg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <span id="messageText" class="message-text"></span>
+      </div>
+
+      <!-- Split Results Container -->
+      <section id="resultContainer" class="result-section" style="display: none;" aria-live="polite">
+        <div class="result-header">
+          <div class="occasion-info">
+            <span class="occasion-badge" id="resultOccasionBadge">Dinner</span>
+            <h2 id="resultOccasionTitle" class="result-title">Occasion Breakdown</h2>
+          </div>
+          <div class="exact-badge" title="Shares add up precisely to the total bill without any rounding discrepancy">
+            <svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            Exact 100% Match
+          </div>
+        </div>
+
+        <!-- Metrics Overview Grid -->
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <span class="metric-label">Total Bill</span>
+            <span class="metric-value" id="summaryTotalBill">$0.00</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">Total People</span>
+            <span class="metric-value" id="summaryPeopleCount">0</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">Average Share</span>
+            <span class="metric-value" id="summaryAverageShare">$0.00</span>
+          </div>
+          <div class="metric-card highlight">
+            <span class="metric-label">Sum of Shares</span>
+            <span class="metric-value" id="summaryCheckSum">$0.00</span>
+          </div>
+        </div>
+
+        <!-- Person-by-Person Breakdown Cards -->
+        <div class="shares-heading-row">
+          <h3 class="shares-heading">Individual Payments</h3>
+          <span class="shares-counter" id="sharesCounter">0 people</span>
+        </div>
+
+        <div id="sharesList" class="shares-grid">
+          <!-- Dynamically populated -->
+        </div>
+
+        <!-- Verification & Utilities Footer -->
+        <div class="result-footer">
+          <div class="reloaded-notice">
+            <svg class="clock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <span id="savedTimeNotice">Saved in browser memory &bull; persists after reload</span>
+          </div>
+          <div class="result-actions">
+            <a href="bill-splitter.zip" download="bill-splitter.zip" class="btn btn-outline" id="downloadZipBtn" title="Download index.html, style.css, script.js in a ZIP file">
+              <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Download ZIP
+            </a>
+            <button type="button" id="exportInvoiceBtn" class="btn btn-outline">
+              <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                <rect x="6" y="14" width="12" height="8"></rect>
+              </svg>
+              Export Invoice
+            </button>
+            <button type="button" id="copyBtn" class="btn btn-outline">
+              <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              Copy Breakdown
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Dedicated Print-Friendly Invoice View (Rendered via window.print()) -->
+    <section id="printableInvoice" class="printable-invoice" aria-hidden="true">
+      <div class="invoice-header">
+        <div class="invoice-brand">
+          <h1 class="invoice-logo">BillSplitter</h1>
+          <p class="invoice-subtitle">Official Expense Split & Payment Invoice</p>
+        </div>
+        <div class="invoice-meta-right">
+          <div class="invoice-badge">100% BALANCED</div>
+          <p class="invoice-date-line"><strong>Date:</strong> <span id="invDate">-</span></p>
+        </div>
+      </div>
+
+      <div class="invoice-details-box">
+        <div class="invoice-detail-item">
+          <span class="inv-label">Occasion / Event</span>
+          <span class="inv-val" id="invOccasion">-</span>
+        </div>
+        <div class="invoice-detail-item">
+          <span class="inv-label">Selected Currency</span>
+          <span class="inv-val" id="invCurrency">-</span>
+        </div>
+        <div class="invoice-detail-item">
+          <span class="inv-label">Number of People</span>
+          <span class="inv-val" id="invPeople">-</span>
+        </div>
+        <div class="invoice-detail-item">
+          <span class="inv-label">Total Bill Amount</span>
+          <span class="inv-val highlight" id="invTotalBill">-</span>
+        </div>
+      </div>
+
+      <table class="invoice-table">
+        <thead>
+          <tr>
+            <th class="col-num">#</th>
+            <th class="col-person">Participant</th>
+            <th class="col-notes">Notes / Subunit Distribution</th>
+            <th class="col-share">Share to Pay</th>
+          </tr>
+        </thead>
+        <tbody id="invSharesTableBody">
+          <!-- Populated dynamically via JS -->
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="3" class="total-label-cell">Total Bill:</td>
+            <td class="total-val-cell" id="invTableTotal">$0.00</td>
+          </tr>
+          <tr class="sum-match-row">
+            <td colspan="3" class="sum-label-cell">
+              Sum of Individual Shares (Exact Match):
+            </td>
+            <td class="sum-val-cell" id="invTableSum">$0.00</td>
+          </tr>
+        </tfoot>
+      </table>
+
+      <div class="invoice-footer-note">
+        <p>&#10003; Verified exact allocation down to the single cent / paisa / penny. No rounding drift.</p>
+        <p class="invoice-generated-by">Generated by BillSplitter &bull; Native Print-Friendly Document</p>
+      </div>
+    </section>
+
+    <!-- Floating Copy Toast Notification -->
+    <div id="toastNotification" class="toast" role="status" aria-live="polite">
+      Breakdown copied to clipboard!
+    </div>
+
+    <footer class="app-footer">
+      <p>Clean &bull; Instant &bull; Exact Cent & Paisa Distribution</p>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
